@@ -116,3 +116,67 @@ class CoffeeSmallWidget extends StatelessWidget {
     );
   }
 }
+
+class HomeWidgetsDown extends StatelessWidget {
+  const HomeWidgetsDown({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Special for you',
+                        style: AppFonts.large.copyWith(color: AppColors.darkGreay),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      height: 150,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.normalBrown,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 180,
+                            height: double.infinity,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: Image.asset(
+                                'assets/Creamy.png',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Text(
+                              'Specially mixed and brewed whivh you must try!',
+                              style: AppFonts.small.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+      ],
+    );
+  }
+}
