@@ -1,4 +1,6 @@
+import 'package:brewbuddies_chat/pages/home_page.dart';
 import 'package:brewbuddies_chat/pages/onbord_page.dart';
+import 'package:brewbuddies_chat/utils/test.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: OnbordPage(),
+      home: HomePage(),
     );
   }
 }

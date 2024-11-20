@@ -1,16 +1,21 @@
-import 'package:brewbuddies_chat/utils/app_colors.dart';
-import 'package:brewbuddies_chat/utils/app_fonts.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class TestPage extends StatefulWidget {
+  const TestPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<TestPage> createState() => _TestPageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _TestPageState extends State<TestPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
+  // State to control chatbox visibility and animation
+  bool _isChatVisible = false;
+
+  // Controller for chat input
+  TextEditingController _chatController = TextEditingController();
 
   @override
   void initState() {
@@ -21,130 +26,169 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void dispose() {
     _tabController.dispose();
+    _chatController.dispose();
     super.dispose();
+  }
+
+  // This is the function to toggle chat visibility and animate it smoothly
+  void _toggleChatBox() {
+    setState(() {
+      _isChatVisible = !_isChatVisible;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),  // Custom height for header
-        child: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          flexibleSpace: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Find the best\nCoffee to your taste',
-                  style: AppFonts.large.copyWith(color: Color(0xFF444444)),
-                ),
-              ],
-            ),
+      backgroundColor: Colors.red,
+      body: Stack(
+        children: [
+          // Main Content of the Home Page
+          Column(
+            children: [
+              // Your other widgets (tabs, headers, etc.)
+              const SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Your Home Page Content Here'),
+              ),
+            ],
           ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 30),
-                      Image.asset('assets/HeadNav.png'),
 
-             Text(
-                  'Find the best\nCoffee to your taste',
-                  style: AppFonts.large.copyWith(color: Color(0xFF444444)),
+          // Animated Chat Button (Floating Button)
+          Positioned(
+            bottom: 50,
+            right: 0,
+            child: GestureDetector(
+              onTap: _toggleChatBox,
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                height: _isChatVisible ? 0 : 70,  // Button shrinks when chat is visible
+                width: _isChatVisible ? 0 : 70,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blueAccent,
                 ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 55,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.lightGreay, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/Search.png',
-                            height: 20,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            'Find your coffee...',
-                            style: AppFonts.small.copyWith(color: AppColors.lightGreay),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                child: Icon(
+                  Icons.chat_bubble_outline,
+                  size: _isChatVisible ? 0 : 40,
+                  color: Colors.white,
                 ),
-                const SizedBox(width: 10),
-                Image.asset(
-                  'assets/sort.png',
-                  height: 55,
-                )
-              ],
-            ),
-            const SizedBox(height: 40),
-            Row(
-              children: [
-                Text(
-                  'Espresso',
-                  style: AppFonts.extraSmall.copyWith(
-                    color: AppColors.darkBrown,
-                    fontWeight: FontWeight.w500,
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(height: 20),
-            TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              labelColor: AppColors.darkBrown,
-              unselectedLabelColor: AppColors.lightGreay,
-              indicatorColor: AppColors.darkBrown,
-              tabs: const [
-                Tab(text: 'Espresso'),
-                Tab(text: 'Latte'),
-                Tab(text: 'Cappuccino'),
-                Tab(text: 'Cafetière'),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildTabContent('Espresso'),
-                  _buildTabContent('Latte'),
-                  _buildTabContent('Cappuccino'),
-                  _buildTabContent('Cafetière'),
-                ],
               ),
             ),
-          ],
-        ),
+          ),
+
+          // Full Chat Interface
+          AnimatedPositioned(
+            bottom: _isChatVisible ? 0 : -800, // Animate the chat interface up and down
+            top: 50,
+            left: 0,
+            right: 0,
+            duration: Duration(milliseconds: 800),
+            curve: Curves.easeInOut,
+            child: _isChatVisible
+                ? Container(
+                    height: MediaQuery.of(context).size.height / 0.5,
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        // Chat Header
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          color: Colors.blueAccent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Chatbot",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                ),
+                                onPressed: _toggleChatBox,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Chat messages list
+                        Expanded(
+                          child: ListView(
+                            padding: const EdgeInsets.all(10),
+                            children: [
+                              _buildMessage("Hello! How can I help you today?", isBot: true),
+                              _buildMessage("I need help with ordering a coffee.", isBot: false),
+                              _buildMessage("Sure, I can assist with that!", isBot: true),
+                            ],
+                          ),
+                        ),
+
+                        // Chat Input Field
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 50.0, left: 10, right: 10),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _chatController,
+                                  decoration: InputDecoration(
+                                    hintText: "Type a message",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.send),
+                                onPressed: () {
+                                  // Add logic for sending the message (later connect with chatbot)
+                                  setState(() {
+                                    // Add the message to the chat (just a dummy message for now)
+                                  });
+                                  _chatController.clear();
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildTabContent(String title) {
-    return Center(
-      child: Text(
-        '$title section',
-        style: AppFonts.small.copyWith(color: AppColors.darkBrown),
+  // Helper function to build messages in the chat interface
+  Widget _buildMessage(String text, {bool isBot = true}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Align(
+        alignment: isBot ? Alignment.centerLeft : Alignment.centerRight,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isBot ? Colors.grey[200] : Colors.blueAccent,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: isBot ? Colors.black : Colors.white,
+            ),
+          ),
+        ),
       ),
     );
   }
