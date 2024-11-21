@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class TestPage extends StatefulWidget {
   const TestPage({super.key});
@@ -15,7 +14,7 @@ class _TestPageState extends State<TestPage> with SingleTickerProviderStateMixin
   bool _isChatVisible = false;
 
   // Controller for chat input
-  TextEditingController _chatController = TextEditingController();
+  final TextEditingController _chatController = TextEditingController();
 
   @override
   void initState() {
@@ -62,11 +61,11 @@ class _TestPageState extends State<TestPage> with SingleTickerProviderStateMixin
             child: GestureDetector(
               onTap: _toggleChatBox,
               child: AnimatedContainer(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
                 height: _isChatVisible ? 0 : 70,  // Button shrinks when chat is visible
                 width: _isChatVisible ? 0 : 70,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.blueAccent,
                 ),
@@ -85,7 +84,7 @@ class _TestPageState extends State<TestPage> with SingleTickerProviderStateMixin
             top: 50,
             left: 0,
             right: 0,
-            duration: Duration(milliseconds: 800),
+            duration: const Duration(milliseconds: 800),
             curve: Curves.easeInOut,
             child: _isChatVisible
                 ? Container(
