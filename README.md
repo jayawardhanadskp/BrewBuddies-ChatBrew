@@ -30,4 +30,3 @@ Make sure you have the following tools installed:
 Additionally, you need to have the Flask backend running. You can find the Flask backend setup [here](https://github.com/jayawardhanadskp/ChatBrew.git).
 
 ---
-
