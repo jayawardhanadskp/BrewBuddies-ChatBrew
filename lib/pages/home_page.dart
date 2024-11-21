@@ -1,8 +1,12 @@
+import 'package:brewbuddies_chat/providers/chat_provider.dart';
+import 'package:brewbuddies_chat/services/api_service.dart';
 import 'package:brewbuddies_chat/utils/app_colors.dart';
 import 'package:brewbuddies_chat/widgets/coffee_small_widget.dart';
 import 'package:brewbuddies_chat/widgets/home_widgets.dart';
 import 'package:brewbuddies_chat/widgets/tab_content.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,13 +15,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  // chat bot visibility animation
-  bool _isChatBotVisible = false;
-
   final TextEditingController _chatController = TextEditingController();
 
   @override
@@ -33,25 +32,19 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-  void _toggleChatBotVisibility() {
-    setState(() {
-      _isChatBotVisible = !_isChatBotVisible;
-    });
-  }
-
-
   @override
   Widget build(BuildContext context) {
-
-    double keyboardheight = MediaQuery.of(context).viewInsets.bottom;
-
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              const HomeWidgets(),
+    return ChangeNotifierProvider(
+      create: (context) => ChatState(),
+      child: Consumer<ChatState>(
+        builder: (context, chatState, _) {
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            body: Stack(
+              children: [
+                Column(
+                  children: [
+                    const HomeWidgets(),
               TabBar(
                 controller: _tabController,
                 isScrollable: true,
@@ -84,144 +77,155 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               const HomeWidgetsDown(),
-            ],
-          ),
+                  ]),
 
-          Positioned(
-            bottom: 130,
-            right: 10,
-            child: GestureDetector(
-              onTap: _toggleChatBotVisibility,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                height: _isChatBotVisible ? 50 : 70,
-                width: _isChatBotVisible ? 50 : 70,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color.fromARGB(114, 221, 168, 114),
-                ),
-                child: Center(
-                  child: Image.asset(
-                    'assets/virtual-assistants.png',
-                    height: _isChatBotVisible ? 30 : 50,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Full chat interface
-          AnimatedPositioned(
-            bottom: _isChatBotVisible ? 90 : -800,
-            top: _isChatBotVisible ? 170 : 300,
-            left: 50,
-            right: 50,
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.slowMiddle,
-            child: AnimatedOpacity(
-              opacity: _isChatBotVisible ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 500),
-              child: _isChatBotVisible
-                  ? Container(
-                      height: MediaQuery.of(context).size.height / 2,
-                      decoration: BoxDecoration(
-                          color: AppColors.lightBrown.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.darkBrown)),
-                      child: Column(
-                        children: [
-                          // Chat Header
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            decoration: BoxDecoration(
-                              color: AppColors.darkBrown.withOpacity(0.9),
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20)),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "ChatBrew",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: _toggleChatBotVisibility,
-                                ),
-                              ],
+                    // ChatBot Toggle Button
+                    Positioned(
+                      bottom: 130,
+                      right: 10,
+                      child: GestureDetector(
+                        onTap: () => chatState.toggleChatVisibility(),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          height: chatState.isChatVisible ? 50 : 70,
+                          width: chatState.isChatVisible ? 50 : 70,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color.fromARGB(114, 221, 168, 114),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/virtual-assistants.png',
+                              height: chatState.isChatVisible ? 30 : 50,
                             ),
                           ),
-
-                          // Chat messages list
-                          Expanded(
-                            child: ListView(
-                              padding: const EdgeInsets.all(10),
-                              children: [
-                                _buildMessage(
-                                    "Hello! How can I help you today?",
-                                    isBot: true),
-                                _buildMessage(
-                                    "I need help with ordering a coffee.",
-                                    isBot: false),
-                                _buildMessage("Sure, I can assist with that!",
-                                    isBot: true),
-                              ],
-                            ),
-                          ),
-
-                          // Chat Input Field
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 50.0, left: 10, right: 10),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    controller: _chatController,
-                                    decoration: InputDecoration(
-                                        hintText: "Type a message",
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        fillColor: Colors.white,
-                                        filled: true),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.send,
-                                    color: AppColors.darkBrown,
-                                    size: 29,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      // Add the message to the chat (just a dummy message for now)
-                                    });
-                                    _chatController.clear();
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    )
-                  : Container(),
+                    ),
+
+                    // Full Chat Interface
+                    AnimatedPositioned(
+                      bottom: chatState.isChatVisible ? 90 : -800,
+                      top: chatState.isChatVisible ? 170 : 300,
+                      left: 50,
+                      right: 50,
+                      duration: const Duration(milliseconds: 700),
+                      curve: Curves.slowMiddle,
+                      child: AnimatedOpacity(
+                        opacity: chatState.isChatVisible ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 500),
+                        child: chatState.isChatVisible
+                            ? Container(
+                                height: MediaQuery.of(context).size.height / 2,
+                                decoration: BoxDecoration(
+                                  // ignore: deprecated_member_use
+                                  color: AppColors.lightBrown.withOpacity(0.9),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: AppColors.darkBrown),
+                                ),
+                                child: Column(
+                                  children: [
+                                    // Chat Header
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 15),
+                                      decoration: BoxDecoration(
+                                        // ignore: deprecated_member_use
+                                        color: AppColors.darkBrown.withOpacity(0.9),
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text(
+                                            "ChatBrew",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () => chatState.toggleChatVisibility(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    // Chat Messages List
+                                    Expanded(
+                                      child: ListView.builder(
+                                        itemCount: chatState.chatHistory.length,
+                                        itemBuilder: (context, index) {
+                                          var message = chatState.chatHistory[index];
+                                          bool isBot = message['sender'] == 'bot';
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                            child: _buildMessage(message['message']!, isBot: isBot),
+                                          );
+                                        },
+                                      ),
+                                    ),
+
+                                    // Chat Input Field
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 50.0, left: 10, right: 10),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextField(
+                                              controller: _chatController,
+                                              decoration: InputDecoration(
+                                                hintText: "Type a message",
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                ),
+                                                fillColor: Colors.white,
+                                                filled: true,
+                                              ),
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.send,
+                                              color: AppColors.darkBrown,
+                                              size: 29,
+                                            ),
+                                            onPressed: () async {
+                                              if (_chatController.text.isNotEmpty) {
+                                                String userMessage = _chatController.text;
+                                                chatState.addMessage('user', userMessage);
+                                                _chatController.clear();
+
+                                                // Get response from the Flask API
+                                                String botResponse = await ApiService.chatResponse(userMessage);
+                                                chatState.addMessage('bot', botResponse);
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                      ),
+                    ),
+                 
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
