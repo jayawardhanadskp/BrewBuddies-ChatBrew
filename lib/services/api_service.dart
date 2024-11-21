@@ -1,28 +1,25 @@
 import 'package:dio/dio.dart';
 
 class ApiService {
-  static const url = 'http://127.0.0.1:5000/chat';
+  static const String url = 'http://127.0.0.1:5000/chat';
 
+  // Function to send the message and get response from the Flask API
   static Future<String> chatResponse(String message) async {
-    Dio dio = Dio();
+    Dio dio = Dio();  // Create Dio instance
 
     try {
-      // Send POST request to Flask API with message in JSON format
       final response = await dio.post(
         url,
         options: Options(
           headers: {'Content-Type': 'application/json'},
         ),
-        data: {'message': message}, // Send the message as data
+        data: {'message': message},  // Send the message as data
       );
 
-      // check
       if (response.statusCode == 200) {
-        print(response.data);
-
-        return response.data;
+        return response.data['response'];  // Return the response from the bot
       } else {
-        throw Exception('Failed to load data');
+        throw Exception('Failed to load response');
       }
     } catch (e) {
       throw Exception('Error: $e');
