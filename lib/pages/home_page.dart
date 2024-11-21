@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage>
                                 // Chat Header
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 15),
+                                      vertical: 8, horizontal: 15),
                                   decoration: BoxDecoration(
                                     // ignore: deprecated_member_use
                                     color: AppColors.darkBrown.withOpacity(0.9),
@@ -150,25 +150,38 @@ class _HomePageState extends State<HomePage>
                                       topRight: Radius.circular(20),
                                     ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Text(
-                                        "ChatBrew",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text(
+                                            "ChatBrew",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () => chatState
+                                                .toggleChatVisibility(),
+                                          ),
+                                        ],
                                       ),
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.white,
+                                      const Text(
+                                        "Ask me about our Services, menu or etc..!",
+                                        style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 12, // Smaller font size
+                                          fontWeight: FontWeight.normal,
                                         ),
-                                        onPressed: () =>
-                                            chatState.toggleChatVisibility(),
                                       ),
                                     ],
                                   ),
@@ -204,12 +217,15 @@ class _HomePageState extends State<HomePage>
                                         child: TextField(
                                           controller: _chatController,
                                           decoration: InputDecoration(
-                                            hintText: "Type a message",
+                                            hintText: "What's on your mind?",
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(20),
+                                              borderSide: const BorderSide(
+                                                  color: AppColors.darkBrown),
                                             ),
-                                            fillColor: Colors.white,
+                                            fillColor: const Color.fromARGB(
+                                                255, 241, 227, 215),
                                             filled: true,
                                           ),
                                         ),

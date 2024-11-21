@@ -5,7 +5,7 @@ class ApiService {
 
   // Function to send the message and get response from the Flask API
   static Future<String> chatResponse(String message) async {
-    Dio dio = Dio();  // Create Dio instance
+    Dio dio = Dio(); // Create Dio instance
 
     try {
       final response = await dio.post(
@@ -13,11 +13,12 @@ class ApiService {
         options: Options(
           headers: {'Content-Type': 'application/json'},
         ),
-        data: {'message': message},  // Send the message as data
+        data: {'message': message}, // Send the message as data
       );
 
       if (response.statusCode == 200) {
-        return response.data['response'];  // Return the response from the bot
+        print(response.data);
+        return response.data['response']; // Return the response from the bot
       } else {
         throw Exception('Failed to load response');
       }
