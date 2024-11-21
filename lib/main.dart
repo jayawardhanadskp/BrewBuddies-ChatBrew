@@ -1,6 +1,4 @@
-import 'package:brewbuddies_chat/pages/home_page.dart';
 import 'package:brewbuddies_chat/pages/onbord_page.dart';
-import 'package:brewbuddies_chat/utils/test.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,12 +11,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Chat Brew',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: const OnbordPage(),
     );
   }
 }
