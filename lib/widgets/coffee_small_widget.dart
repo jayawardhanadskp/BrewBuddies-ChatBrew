@@ -20,7 +20,7 @@ class CoffeeSmallWidget extends StatelessWidget {
       child: Container(
         width: 200,
         height: 235,
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25),
           color: Colors.white,
@@ -99,7 +99,7 @@ class CoffeeSmallWidget extends StatelessWidget {
                             bottomRight: Radius.circular(25),
                             topLeft: Radius.circular(25)),
                       ),
-                      child: Center(
+                      child: const Center(
                           child: Icon(
                         Icons.add,
                         color: Colors.white,
