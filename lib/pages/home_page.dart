@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage>
   // chat bot visibility animation
   bool _isChatBotVisible = false;
 
-  TextEditingController _chatController = TextEditingController();
+  final TextEditingController _chatController = TextEditingController();
 
   @override
   void initState() {
@@ -39,8 +39,12 @@ class _HomePageState extends State<HomePage>
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
+
+    double keyboardheight = MediaQuery.of(context).viewInsets.bottom;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
@@ -82,31 +86,28 @@ class _HomePageState extends State<HomePage>
               const HomeWidgetsDown(),
             ],
           ),
+
           Positioned(
             bottom: 130,
             right: 10,
             child: GestureDetector(
               onTap: _toggleChatBotVisibility,
               child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  height: _isChatBotVisible ? 50 : 70,
-                  width: _isChatBotVisible ? 50 : 70,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color.fromARGB(114, 221, 168, 114),
-                  ),
-                  child: Center(
-                      child: Image.asset(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                height: _isChatBotVisible ? 50 : 70,
+                width: _isChatBotVisible ? 50 : 70,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color.fromARGB(114, 221, 168, 114),
+                ),
+                child: Center(
+                  child: Image.asset(
                     'assets/virtual-assistants.png',
                     height: _isChatBotVisible ? 30 : 50,
-                  ))
-                  // Icon(
-                  //   Icons.chat_bubble_outline,
-                  //   size: _isChatBotVisible ? 20 : 40,
-                  //   color: Colors.white,
-                  // ),
                   ),
+                ),
+              ),
             ),
           ),
 
